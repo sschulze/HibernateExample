@@ -60,6 +60,39 @@ public class HHHxxxx {
     }
     
     @Test
+    public void testInsertBarNotWorking(){
+        EntityTransaction tx=em.getTransaction();
+        tx.begin();
+        TypedQuery<FooNotWorking> query=em.createQuery("select f from FooNotWorking f", FooNotWorking.class);
+        FooNotWorking foo = query.getSingleResult();
+        Assert.assertNotNull(foo);
+        
+        BarNotWorking bar=new BarNotWorking();
+        bar.setId(1);
+        bar.setFoo(foo);
+        em.persist(bar);
+        em.flush();
+        tx.rollback();
+    }
+
+//During "drop table BAR if exists" HSQLDB seems to get into a deadlock for any reason.
+//    @Test
+//    public void testInsertBarWorking(){
+//        EntityTransaction tx=em.getTransaction();
+//        tx.begin();
+//        TypedQuery<FooWorking> query=em.createQuery("select f from FooWorking f", FooWorking.class);
+//        FooWorking foo = query.getSingleResult();
+//        Assert.assertNotNull(foo);
+//        
+//        BarWorking bar=new BarWorking();
+//        bar.setId(1);
+//        bar.setFoo(foo);
+//        em.persist(bar);
+//        em.flush();
+//        tx.rollback();
+//    }
+    
+    @Test
     public void testSelectFooWorking(){
         TypedQuery<FooWorking> query=em.createQuery("select f from FooWorking f", FooWorking.class);
         FooWorking foo = query.getSingleResult();
